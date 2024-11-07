@@ -1,0 +1,98 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Déclaration d'Accident de Travail</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 20px;
+      background-color: #f4f4f9;
+    }
+    form {
+      max-width: 500px;
+      margin: auto;
+      padding: 20px;
+      background: #fff;
+      border-radius: 8px;
+      box-shadow: 0 0 10px rgba(0, 0, 0, 0.1);
+    }
+    label {
+      display: block;
+      margin-top: 10px;
+      font-weight: bold;
+    }
+    input, textarea, button {
+      width: 100%;
+      padding: 10px;
+      margin-top: 5px;
+      border: 1px solid #ccc;
+      border-radius: 4px;
+    }
+    button {
+      background-color: #28a745;
+      color: white;
+      font-size: 16px;
+      cursor: pointer;
+      margin-top: 20px;
+    }
+    button:hover {
+      background-color: #218838;
+    }
+    #status {
+      margin-top: 20px;
+      font-weight: bold;
+      color: #333;
+    }
+  </style>
+</head>
+<body>
+  <h1 style="text-align: center;">Déclaration d'Accident de Travail</h1>
+  
+  <form id="accidentForm" enctype="multipart/form-data">
+    <label for="name">Nom de l'employé :</label>
+    <input type="text" id="name" name="name" required>
+    
+    <label for="email">Courriel UQAM :</label>
+    <input type="email" id="email" name="email" pattern=".+@uqam\.ca" required>
+    
+    <label for="date">Date de l'accident :</label>
+    <input type="date" id="date" name="date" required>
+    
+    <label for="location">Lieu de l'accident :</label>
+    <input type="text" id="location" name="location" required>
+    
+    <label for="description">Description de l'incident :</label>
+    <textarea id="description" name="description" rows="4" required></textarea>
+    
+    <label for="photo">Prendre une photo :</label>
+    <input type="file" id="photo" name="photo" accept="image/*" capture="camera" required>
+    
+    <button type="submit">Envoyer la déclaration</button>
+  </form>
+
+  <p id="status"></p>
+
+  <script>
+    document.getElementById('accidentForm').addEventListener('submit', async function (e) {
+      e.preventDefault();
+      const formData = new FormData(this);
+
+      try {
+        const response = await fetch('http://localhost:3000/send-report', {
+          method: 'POST',
+          body: formData
+        });
+
+        const result = await response.json();
+        document.getElementById('status').textContent = result.message;
+        document.getElementById('status').style.color = "green";
+      } catch (error) {
+        document.getElementById('status').textContent = "Erreur lors de l'envoi de la déclaration.";
+        document.getElementById('status').style.color = "red";
+      }
+    });
+  </script>
+</body>
+</html>
